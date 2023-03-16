@@ -1,6 +1,7 @@
 package ru.practicum.ewm.service;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -16,6 +17,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
+@Slf4j
 @Transactional(readOnly = true)
 @RequiredArgsConstructor(onConstructor_ = @Autowired)
 public class StatsServiceImpl implements StatsService {
@@ -25,6 +27,7 @@ public class StatsServiceImpl implements StatsService {
     @Transactional
     public EndpointHitDto create(EndpointHitDto endpointHitDto) {
         EndpointHit endpointHit = statsRepository.save(StatsMapper.toEndpointHit(endpointHitDto));
+        log.info("Hit created with id {}", endpointHit.getId());
         return StatsMapper.toEndpointHitDto(endpointHit);
     }
 
@@ -33,6 +36,7 @@ public class StatsServiceImpl implements StatsService {
                                        LocalDateTime end,
                                        List<String> uris,
                                        Boolean unique) {
+        log.info("Stats send");
         if (uris == null || uris.isEmpty()) {
             return Collections.emptyList();
         }
