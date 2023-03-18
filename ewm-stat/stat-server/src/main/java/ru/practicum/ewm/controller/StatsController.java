@@ -14,8 +14,8 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 
-@RestController
 @Validated
+@RestController
 @RequiredArgsConstructor(onConstructor_ = @Autowired)
 public class StatsController {
     private final StatsService statsService;
