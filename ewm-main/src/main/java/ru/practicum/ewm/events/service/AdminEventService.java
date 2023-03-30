@@ -33,7 +33,7 @@ import java.util.stream.Collectors;
 public class AdminEventService {
     private final CriteriaEventRepository criteriaEventRepository;
     private final EventRepository eventRepository;
-    private final DateTimeFormatter FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+    private final DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
     private final CategoryRepository categoryRepository;
     private final LocationRepository locationRepository;
     private final RequestsRepository requestsRepository;
@@ -56,11 +56,11 @@ public class AdminEventService {
         });
         if (eventUpdateRequestDto.getEventDate() != null) {
             if (LocalDateTime.parse(eventUpdateRequestDto.getEventDate(),
-                    FORMATTER).isBefore(LocalDateTime.now())) {
+                    dateTimeFormatter).isBefore(LocalDateTime.now())) {
                 throw new ConflictException("Date in the past");
             } else {
                 event.setEventDate(LocalDateTime.parse(eventUpdateRequestDto.getEventDate(),
-                        FORMATTER));
+                        dateTimeFormatter));
             }
         }
         if (event.getEventState() == EventState.PUBLISHED

@@ -50,8 +50,8 @@ public class PublicEventService {
         List<FullEventDto> fullEventDtoList = events.stream()
                 .map(EventMapper::toFullEventDto)
                 .collect(Collectors.toList());
-        fullEventDtoList.forEach(event -> event.setConfirmedRequests
-                (requestsRepository.findByEventIdConfirmed(event.getId()).size()));
+        fullEventDtoList.forEach(event -> event.setConfirmedRequests(requestsRepository
+                .findByEventIdConfirmed(event.getId()).size()));
         if (onlyAvailable) {
             fullEventDtoList = fullEventDtoList.stream()
                     .filter(event -> event.getParticipantLimit() <= event.getConfirmedRequests())
