@@ -72,7 +72,7 @@ public class PublicEventService {
     }
 
     public FullEventDto findById(Long id, HttpServletRequest request) {
-        Event event = eventRepository.findById(id).orElseThrow(()-> {
+        Event event = eventRepository.findById(id).orElseThrow(() -> {
             throw new ObjectNotFoundException("Event not found");
         });
         FullEventDto fullEventDto = EventMapper.toFullEventDto(event);
