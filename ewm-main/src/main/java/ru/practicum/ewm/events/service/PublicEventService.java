@@ -13,6 +13,7 @@ import ru.practicum.ewm.events.mapper.EventMapper;
 import ru.practicum.ewm.events.model.Event;
 import ru.practicum.ewm.events.repository.EventRepository;
 import ru.practicum.ewm.events.util.EventUtil;
+import ru.practicum.ewm.exception.ObjectNotFoundException;
 import ru.practicum.ewm.requests.dto.RequestStatus;
 import ru.practicum.ewm.requests.repository.RequestsRepository;
 import ru.practicum.ewm.statistic.HitMapper;
@@ -45,6 +46,7 @@ public class PublicEventService {
         if (rangeStart != null) {
             end = LocalDateTime.parse(rangeEnd, DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
         }
+        if (text == null) text = "";
         List<Event> events = eventRepository.findByParamsOrderByDate(text.toLowerCase(), List.of(EventState.PUBLISHED),
                 categories, paid, start, end, pageable);
         List<FullEventDto> fullEventDtoList = events.stream()
@@ -57,20 +59,22 @@ public class PublicEventService {
                     .filter(event -> event.getParticipantLimit() <= event.getConfirmedRequests())
                     .collect(Collectors.toList());
         }
+        statService.createView(HitMapper.toEndpointHit("ewm-main-service", request));
         List<ShortEventDto> eventsShort = EventUtil.getViews(fullEventDtoList, statService).stream()
                 .map(EventMapper::toShortFromFull)
                 .collect(Collectors.toList());
         if (sort != null && sort.equalsIgnoreCase("VIEWS")) {
             eventsShort.sort((e1, e2) -> e2.getViews().compareTo(e1.getViews()));
         }
-        statService.createView(HitMapper.toEndpointHit("ewm-main-service", request));
         EventUtil.getConfirmedRequests(fullEventDtoList, requestsRepository);
         log.info("Events sent");
         return eventsShort;
     }
 
     public FullEventDto findById(Long id, HttpServletRequest request) {
-        Event event = eventRepository.findById(id).orElseThrow();
+        Event event = eventRepository.findById(id).orElseThrow(()-> {
+            throw new ObjectNotFoundException("Event not found");
+        });
         FullEventDto fullEventDto = EventMapper.toFullEventDto(event);
         fullEventDto.setConfirmedRequests(requestsRepository.findAllByEventIdAndStatus(event.getId(), RequestStatus.CONFIRMED).size());
         statService.createView(HitMapper.toEndpointHit("ewm-main-service", request));

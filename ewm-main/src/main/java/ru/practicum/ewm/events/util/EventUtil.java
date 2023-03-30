@@ -32,10 +32,8 @@ public class EventUtil {
                         new ArrayList<>(views.keySet()),
                         false)
                 .getBody();
-        System.out.println(responseBody);
         List<ViewStatsDto> viewStatsDtos = new ObjectMapper().convertValue(responseBody, new TypeReference<>() {
         });
-
         viewStatsDtos.forEach(viewStatsDto -> {
             if (views.containsKey(viewStatsDto.getUri())) {
                 views.get(viewStatsDto.getUri()).setViews(viewStatsDto.getHits());
@@ -53,10 +51,8 @@ public class EventUtil {
                         new ArrayList<>(views.keySet()),
                         false)
                 .getBody();
-        System.out.println(responseBody);
         List<ViewStatsDto> viewStatsDtos = new ObjectMapper().convertValue(responseBody, new TypeReference<>() {
         });
-
         viewStatsDtos.forEach(viewStatsDto -> {
             if (views.containsKey(viewStatsDto.getUri())) {
                 views.get(viewStatsDto.getUri()).setViews(viewStatsDto.getHits());

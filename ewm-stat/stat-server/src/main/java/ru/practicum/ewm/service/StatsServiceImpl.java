@@ -9,10 +9,12 @@ import ru.practicum.ewm.mapper.StatsMapper;
 import ru.practicum.ewm.dto.EndpointHitDto;
 import ru.practicum.ewm.dto.ViewStatsDto;
 import ru.practicum.ewm.model.EndpointHit;
+import ru.practicum.ewm.model.ViewStats;
 import ru.practicum.ewm.repository.StatsRepository;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -36,25 +38,43 @@ public class StatsServiceImpl implements StatsService {
                                        List<String> uris,
                                        Boolean unique) {
         log.info("Stats sent");
+        Optional<ViewStats> viewStatsForAll = statsRepository.getStatsAll(start, end);
+        long hits;
+        if (viewStatsForAll.isPresent()) {
+            hits = viewStatsForAll.get().getHits();
+        } else {
+            hits = 0;
+        }
+        List<ViewStatsDto> viewStatsDtos;
         if (uris == null || uris.isEmpty()) {
             if (unique) {
-                return statsRepository.getStatsWithoutUriUnique(start, end).stream()
+                viewStatsDtos = statsRepository.getStatsWithoutUriUnique(start, end).stream()
                         .map(StatsMapper::toViewStatsDto)
                         .collect(Collectors.toList());
+                return viewStatsDtos;
             } else {
-                return statsRepository.getStatsWithoutUriNotUnique(start, end).stream()
+                viewStatsDtos = statsRepository.getStatsWithoutUriNotUnique(start, end).stream()
                         .map(StatsMapper::toViewStatsDto)
                         .collect(Collectors.toList());
+                return viewStatsDtos;
             }
         }
         if (unique) {
-            return statsRepository.getStatsUnique(start, end, uris).stream()
+            viewStatsDtos = statsRepository.getStatsUnique(start, end, uris).stream()
                     .map(StatsMapper::toViewStatsDto)
                     .collect(Collectors.toList());
+            if (uris.size() == 1 && uris.get(0).equalsIgnoreCase("/events")) {
+                viewStatsDtos.forEach(view -> view.setHits(view.getHits() + hits));
+            }
+            return viewStatsDtos;
         } else {
-            return statsRepository.getStatsNotUnique(start, end, uris).stream()
+            viewStatsDtos = statsRepository.getStatsNotUnique(start, end, uris).stream()
                     .map(StatsMapper::toViewStatsDto)
                     .collect(Collectors.toList());
+            if (uris.size() == 1 && uris.get(0).equalsIgnoreCase("/events")) {
+                viewStatsDtos.forEach(view -> view.setHits(view.getHits() + hits));
+            }
+            return viewStatsDtos;
         }
     }
 }
