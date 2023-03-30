@@ -3,6 +3,7 @@ package ru.practicum.ewm.user.dto;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
+
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -23,11 +24,11 @@ public class UserDto {
 
     @Getter
     @Setter
-    static class UserDtoShort {
+    public static class UserShortDto {
         private Long id;
         private String name;
 
-        public UserDtoShort(Long id, String name) {
+        public UserShortDto(Long id, String name) {
             this.id = id;
             this.name = name;
         }

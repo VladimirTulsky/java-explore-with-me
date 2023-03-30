@@ -14,7 +14,7 @@ import java.util.concurrent.TimeUnit;
 
 @Configuration
 public class WebClientConfig {
-    private static final String BASE_URL = "https://localhost:9090";
+    private static final String BASE_URL = "http://localhost:9090";
     private static final int TIMEOUT = 5000;
 
     @Bean

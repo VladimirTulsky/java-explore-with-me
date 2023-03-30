@@ -15,4 +15,9 @@ public class UserMapper {
                 user.getEmail(),
                 user.getName());
     }
+
+    public static UserDto.UserShortDto toUserShortDto(User user) {
+        return new UserDto.UserShortDto(user.getId(),
+                user.getName());
+    }
 }
