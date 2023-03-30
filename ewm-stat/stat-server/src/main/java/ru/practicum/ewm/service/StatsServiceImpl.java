@@ -12,7 +12,6 @@ import ru.practicum.ewm.model.EndpointHit;
 import ru.practicum.ewm.repository.StatsRepository;
 
 import java.time.LocalDateTime;
-import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -36,9 +35,17 @@ public class StatsServiceImpl implements StatsService {
                                        LocalDateTime end,
                                        List<String> uris,
                                        Boolean unique) {
-        log.info("Stats send");
+        log.info("Stats sent");
         if (uris == null || uris.isEmpty()) {
-            return Collections.emptyList();
+            if (unique) {
+                return statsRepository.getStatsWithoutUriUnique(start, end).stream()
+                        .map(StatsMapper::toViewStatsDto)
+                        .collect(Collectors.toList());
+            } else {
+                return statsRepository.getStatsWithoutUriNotUnique(start, end).stream()
+                        .map(StatsMapper::toViewStatsDto)
+                        .collect(Collectors.toList());
+            }
         }
         if (unique) {
             return statsRepository.getStatsUnique(start, end, uris).stream()

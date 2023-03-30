@@ -29,6 +29,22 @@ public interface StatsRepository extends JpaRepository<EndpointHit, Long> {
             "group by hit.app, hit.uri " +
             "order by count(hit.ip) desc")
     List<ViewStats> getStatsNotUnique(@Param("start") LocalDateTime start,
-                                   @Param("end") LocalDateTime end,
-                                   @Param("uris") List<String> uris);
+                                      @Param("end") LocalDateTime end,
+                                      @Param("uris") List<String> uris);
+
+    @Query("select new ru.practicum.ewm.model.ViewStats(hit.app, hit.uri, count(distinct hit.ip)) " +
+            "from EndpointHit hit " +
+            "where (hit.timestamp between :start and :end) " +
+            "group by hit.app, hit.uri " +
+            "order by count(distinct hit.ip) desc")
+    List<ViewStats> getStatsWithoutUriUnique(@Param("start") LocalDateTime start,
+                                             @Param("end") LocalDateTime end);
+
+    @Query("select new ru.practicum.ewm.model.ViewStats(hit.app, hit.uri, count(hit.ip)) " +
+            "from EndpointHit hit " +
+            "where (hit.timestamp between :start and :end) " +
+            "group by hit.app, hit.uri " +
+            "order by count(hit.ip) desc")
+    List<ViewStats> getStatsWithoutUriNotUnique(@Param("start") LocalDateTime start,
+                                                @Param("end") LocalDateTime end);
 }
