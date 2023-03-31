@@ -2,7 +2,6 @@ package ru.practicum.ewm.categories.service;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -18,16 +17,16 @@ import java.util.stream.Collectors;
 
 @Slf4j
 @Transactional(readOnly = true)
-@RequiredArgsConstructor(onConstructor_ = @Autowired)
+@RequiredArgsConstructor
 @Service
 public class CategoryService {
     private final CategoryRepository categoryRepository;
 
     @Transactional
     public CategoryDto create(CategoryDto categoryDto) {
-        Category category = categoryRepository.save(CategoryMapper.toCategory(categoryDto));
+        Category category = categoryRepository.save(CategoryMapper.CATEGORY_MAPPER.toCategory(categoryDto));
         log.info("Category created with id {}", category.getId());
-        return CategoryMapper.toCategoryDto(category);
+        return CategoryMapper.CATEGORY_MAPPER.toCategoryDto(category);
     }
 
     @Transactional
@@ -40,7 +39,7 @@ public class CategoryService {
         }
         category.setName(categoryDto.getName());
         log.info("Category with id {} updated", catId);
-        return CategoryMapper.toCategoryDto(categoryRepository.save(category));
+        return CategoryMapper.CATEGORY_MAPPER.toCategoryDto(categoryRepository.save(category));
     }
 
     @Transactional
@@ -55,7 +54,7 @@ public class CategoryService {
     public List<CategoryDto> findAll(Pageable pageable) {
         log.info("Categories sent");
         return categoryRepository.findAll(pageable).stream()
-                .map(CategoryMapper::toCategoryDto)
+                .map(CategoryMapper.CATEGORY_MAPPER::toCategoryDto)
                 .collect(Collectors.toList());
     }
 
@@ -65,6 +64,6 @@ public class CategoryService {
             throw new ObjectNotFoundException("Category not found");
         });
         log.info("Category with id {} sent", catId);
-        return CategoryMapper.toCategoryDto(category);
+        return CategoryMapper.CATEGORY_MAPPER.toCategoryDto(category);
     }
 }

@@ -1,7 +1,6 @@
 package ru.practicum.ewm.user.controller;
 
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.validation.annotation.Validated;
@@ -16,7 +15,7 @@ import java.util.List;
 
 @Validated
 @RestController
-@RequiredArgsConstructor(onConstructor_ = @Autowired)
+@RequiredArgsConstructor
 @RequestMapping("/admin/users")
 public class AdminUserController {
     private final AdminUserService adminUserService;

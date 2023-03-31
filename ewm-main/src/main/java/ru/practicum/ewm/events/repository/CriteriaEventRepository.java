@@ -1,7 +1,6 @@
 package ru.practicum.ewm.events.repository;
 
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 import ru.practicum.ewm.events.dto.EventState;
 import ru.practicum.ewm.events.model.Event;
@@ -18,7 +17,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Repository
-@RequiredArgsConstructor(onConstructor_ = @Autowired)
+@RequiredArgsConstructor
 public class CriteriaEventRepository {
     private final EntityManager entityManager;
 

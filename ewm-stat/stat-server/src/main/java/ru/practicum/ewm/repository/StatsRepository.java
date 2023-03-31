@@ -9,7 +9,6 @@ import ru.practicum.ewm.model.ViewStats;
 
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Optional;
 
 @Repository
 public interface StatsRepository extends JpaRepository<EndpointHit, Long> {
@@ -48,13 +47,4 @@ public interface StatsRepository extends JpaRepository<EndpointHit, Long> {
             "order by count(hit.ip) desc")
     List<ViewStats> getStatsWithoutUriNotUnique(@Param("start") LocalDateTime start,
                                                 @Param("end") LocalDateTime end);
-
-    @Query("select new ru.practicum.ewm.model.ViewStats(hit.app, hit.uri, count(hit.ip)) " +
-            "from EndpointHit hit " +
-            "where (hit.timestamp between :start and :end) " +
-            "and hit.uri = '/events' " +
-            "group by hit.app, hit.uri " +
-            "order by count(hit.ip) desc")
-    Optional<ViewStats> getStatsAll(@Param("start") LocalDateTime start,
-                                    @Param("end") LocalDateTime end);
 }

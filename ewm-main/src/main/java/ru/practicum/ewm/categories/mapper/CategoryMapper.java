@@ -1,16 +1,14 @@
 package ru.practicum.ewm.categories.mapper;
 
+import org.mapstruct.Mapper;
+import org.mapstruct.factory.Mappers;
 import ru.practicum.ewm.categories.dto.CategoryDto;
 import ru.practicum.ewm.categories.model.Category;
 
-public class CategoryMapper {
-    public static Category toCategory(CategoryDto categoryDto) {
-        return new Category(categoryDto.getId(),
-                categoryDto.getName());
-    }
+@Mapper
+public interface CategoryMapper {
+    CategoryMapper CATEGORY_MAPPER = Mappers.getMapper(CategoryMapper.class);
 
-    public static CategoryDto toCategoryDto(Category category) {
-        return new CategoryDto(category.getId(),
-                category.getName());
-    }
+    Category toCategory(CategoryDto categoryDto);
+    CategoryDto toCategoryDto(Category category);
 }

@@ -1,23 +1,15 @@
 package ru.practicum.ewm.user.mapper;
 
+import org.mapstruct.Mapper;
+import org.mapstruct.factory.Mappers;
 import ru.practicum.ewm.user.dto.UserDto;
 import ru.practicum.ewm.user.model.User;
 
-public class UserMapper {
-    public static User toUser(UserDto userDto) {
-        return new User(userDto.getId(),
-                userDto.getEmail(),
-                userDto.getName());
-    }
+@Mapper
+public interface UserMapper {
+    UserMapper USER_MAPPER = Mappers.getMapper(UserMapper.class);
 
-    public static UserDto toUserDto(User user) {
-        return new UserDto(user.getId(),
-                user.getEmail(),
-                user.getName());
-    }
-
-    public static UserDto.UserShortDto toUserShortDto(User user) {
-        return new UserDto.UserShortDto(user.getId(),
-                user.getName());
-    }
+    UserDto toUserDto(User user);
+    UserDto.UserShortDto toShortUserDto(User user);
+    User toUser(UserDto userDto);
 }

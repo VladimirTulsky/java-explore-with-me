@@ -1,14 +1,16 @@
 package ru.practicum.ewm.requests.mapper;
 
+import org.mapstruct.Mapper;
+import org.mapstruct.Mapping;
+import org.mapstruct.factory.Mappers;
 import ru.practicum.ewm.requests.dto.RequestDto;
 import ru.practicum.ewm.requests.model.ParticipationRequest;
 
-public class RequestsMapper {
-    public static RequestDto toRequestDto(ParticipationRequest participationRequest) {
-        return new RequestDto(participationRequest.getId(),
-                participationRequest.getCreated(),
-                participationRequest.getEvent().getId(),
-                participationRequest.getRequester().getId(),
-                participationRequest.getStatus());
-    }
+@Mapper
+public interface RequestsMapper {
+    RequestsMapper REQUESTS_MAPPER = Mappers.getMapper(RequestsMapper.class);
+
+    @Mapping(target = "event", source = "event.id")
+    @Mapping(target = "requester", source = "requester.id")
+    RequestDto toRequestDto(ParticipationRequest participationRequest);
 }

@@ -2,7 +2,6 @@ package ru.practicum.ewm.requests.service;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.practicum.ewm.events.dto.EventRequestStatusUpdateRequest;
@@ -30,7 +29,7 @@ import java.util.stream.Collectors;
 @Slf4j
 @Service
 @Transactional(readOnly = true)
-@RequiredArgsConstructor(onConstructor_ = @Autowired)
+@RequiredArgsConstructor
 public class RequestsService {
     private final EventRepository eventRepository;
     private final AdminUserRepository userRepository;
@@ -39,14 +38,14 @@ public class RequestsService {
     public List<RequestDto> findByRequestorId(Long userId) {
         log.info("Request sent");
         return requestsRepository.findByRequesterId(userId).stream()
-                .map(RequestsMapper::toRequestDto)
+                .map(RequestsMapper.REQUESTS_MAPPER::toRequestDto)
                 .collect(Collectors.toList());
     }
 
     public List<RequestDto> findByEventIdAndInitiatorId(Long eventId, Long userId) {
         log.info("Requests sent");
         return requestsRepository.findByEventIdAndInitiatorId(eventId, userId).stream()
-                .map(RequestsMapper::toRequestDto)
+                .map(RequestsMapper.REQUESTS_MAPPER::toRequestDto)
                 .collect(Collectors.toList());
     }
 
@@ -82,7 +81,7 @@ public class RequestsService {
         if (check.isPresent()) throw new ConflictException("You already have request to event");
         request = requestsRepository.save(request);
         log.info("Request created");
-        return RequestsMapper.toRequestDto(request);
+        return RequestsMapper.REQUESTS_MAPPER.toRequestDto(request);
     }
 
     @Transactional
@@ -93,7 +92,7 @@ public class RequestsService {
         );
         request.setStatus(RequestStatus.CANCELED);
         log.info("Request canceled");
-        return RequestsMapper.toRequestDto(requestsRepository.save(request));
+        return RequestsMapper.REQUESTS_MAPPER.toRequestDto(requestsRepository.save(request));
     }
 
     @Transactional
@@ -116,7 +115,7 @@ public class RequestsService {
                 && confirmedRequests + requests.size() > event.getParticipantLimit()) {
             requests.forEach(request -> request.setStatus(RequestStatus.REJECTED));
             List<RequestDto> requestDto = requests.stream()
-                    .map(RequestsMapper::toRequestDto)
+                    .map(RequestsMapper.REQUESTS_MAPPER::toRequestDto)
                     .collect(Collectors.toList());
             requestUpdateDto.setRejectedRequests(requestDto);
             requestsRepository.saveAll(requests);
@@ -130,7 +129,7 @@ public class RequestsService {
                 request.setStatus(RequestStatus.REJECTED);
             });
             List<RequestDto> requestDto = requests.stream()
-                    .map(RequestsMapper::toRequestDto)
+                    .map(RequestsMapper.REQUESTS_MAPPER::toRequestDto)
                     .collect(Collectors.toList());
             requestUpdateDto.setRejectedRequests(requestDto);
             requestsRepository.saveAll(requests);
@@ -138,7 +137,7 @@ public class RequestsService {
                 && eventRequestStatusUpdateRequest.getRequestIds().size() <= event.getParticipantLimit() - confirmedRequests) {
             requests.forEach(request -> request.setStatus(RequestStatus.CONFIRMED));
             List<RequestDto> requestDto = requests.stream()
-                    .map(RequestsMapper::toRequestDto)
+                    .map(RequestsMapper.REQUESTS_MAPPER::toRequestDto)
                     .collect(Collectors.toList());
             requestUpdateDto.setConfirmedRequests(requestDto);
             requestsRepository.saveAll(requests);

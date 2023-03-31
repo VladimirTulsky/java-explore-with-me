@@ -2,7 +2,6 @@ package ru.practicum.ewm.user.service;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -18,7 +17,7 @@ import java.util.stream.Collectors;
 @Service
 @Slf4j
 @Transactional(readOnly = true)
-@RequiredArgsConstructor(onConstructor_ = @Autowired)
+@RequiredArgsConstructor
 public class AdminUserService {
     private final AdminUserRepository adminUserRepository;
 
@@ -26,20 +25,20 @@ public class AdminUserService {
         log.info("User list sent");
         if (!ids.isEmpty()) {
             return adminUserRepository.findAllByIdIn(ids, page).stream()
-                    .map(UserMapper::toUserDto)
+                    .map(UserMapper.USER_MAPPER::toUserDto)
                     .collect(Collectors.toList());
         } else {
             return adminUserRepository.findAll(page).stream()
-                    .map(UserMapper::toUserDto)
+                    .map(UserMapper.USER_MAPPER::toUserDto)
                     .collect(Collectors.toList());
         }
     }
 
     @Transactional
     public UserDto create(UserDto userDto) {
-        User user = adminUserRepository.save(UserMapper.toUser(userDto));
+        User user = adminUserRepository.save(UserMapper.USER_MAPPER.toUser(userDto));
         log.info("User created with id {}", user.getId());
-        return UserMapper.toUserDto(user);
+        return UserMapper.USER_MAPPER.toUserDto(user);
     }
 
     @Transactional

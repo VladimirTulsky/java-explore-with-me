@@ -1,7 +1,6 @@
 package ru.practicum.ewm.requests.controller;
 
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -15,7 +14,7 @@ import java.util.List;
 @Validated
 @RestController
 @RequestMapping("/users/{userId}/requests")
-@RequiredArgsConstructor(onConstructor_ = @Autowired)
+@RequiredArgsConstructor
 public class RequestsController {
     private final RequestsService requestsService;
 

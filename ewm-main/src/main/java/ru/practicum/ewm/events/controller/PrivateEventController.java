@@ -1,7 +1,6 @@
 package ru.practicum.ewm.events.controller;
 
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.validation.annotation.Validated;
@@ -20,7 +19,7 @@ import java.util.List;
 @Validated
 @RestController
 @RequestMapping("/users/{userId}/events")
-@RequiredArgsConstructor(onConstructor_ = @Autowired)
+@RequiredArgsConstructor
 public class PrivateEventController {
     private final PrivateEventService privateEventService;
     private final RequestsService requestsService;

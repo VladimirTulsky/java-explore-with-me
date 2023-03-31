@@ -1,7 +1,6 @@
 package ru.practicum.ewm.events.service;
 
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.practicum.ewm.categories.model.Category;
@@ -28,7 +27,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
-@RequiredArgsConstructor(onConstructor_ = @Autowired)
+@RequiredArgsConstructor
 @Transactional(readOnly = true)
 public class AdminEventService {
     private final CriteriaEventRepository criteriaEventRepository;
