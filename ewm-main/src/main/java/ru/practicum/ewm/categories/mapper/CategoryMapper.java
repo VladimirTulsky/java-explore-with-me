@@ -10,5 +10,6 @@ public interface CategoryMapper {
     CategoryMapper CATEGORY_MAPPER = Mappers.getMapper(CategoryMapper.class);
 
     Category toCategory(CategoryDto categoryDto);
+
     CategoryDto toCategoryDto(Category category);
 }

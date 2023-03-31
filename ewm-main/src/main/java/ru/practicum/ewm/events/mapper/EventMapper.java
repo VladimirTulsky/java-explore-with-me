@@ -21,14 +21,14 @@ public interface EventMapper {
     @Mapping(target = "publishedOn", expression = "java(java.time.LocalDateTime.now())")
     Event toEventFromCreateDto(User initiator, Category category, CreateEventDto createEventDto);
 
-    @Mapping(target="createdOn", dateFormat="yyyy-MM-dd HH:mm:ss")
-    @Mapping(target="eventDate", dateFormat="yyyy-MM-dd HH:mm:ss")
-    @Mapping(target = "publishedOn", dateFormat="yyyy-MM-dd HH:mm:ss")
+    @Mapping(target = "createdOn", dateFormat = "yyyy-MM-dd HH:mm:ss")
+    @Mapping(target = "eventDate", dateFormat = "yyyy-MM-dd HH:mm:ss")
+    @Mapping(target = "publishedOn", dateFormat = "yyyy-MM-dd HH:mm:ss")
     @Mapping(target = "views", expression = "java(0L)")
     @Mapping(target = "state", expression = "java(event.getEventState().name())")
     FullEventDto toFullEventDto(Event event);
 
-    @Mapping(target = "eventDate", dateFormat="yyyy-MM-dd HH:mm:ss")
+    @Mapping(target = "eventDate", dateFormat = "yyyy-MM-dd HH:mm:ss")
     ShortEventDto toShortEventDto(Event event);
 
     ShortEventDto toShortFromFull(FullEventDto fullEventDto);
