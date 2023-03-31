@@ -49,7 +49,7 @@ public class PublicEventService {
         List<Event> events = eventRepository.findByParamsOrderByDate(text.toLowerCase(), List.of(EventState.PUBLISHED),
                 categories, paid, start, end, pageable);
         List<FullEventDto> fullEventDtoList = events.stream()
-                .map(EventMapper::toFullEventDto)
+                .map(EventMapper.EVENT_MAPPER::toFullEventDto)
                 .collect(Collectors.toList());
         fullEventDtoList.forEach(event -> event.setConfirmedRequests(requestsRepository
                 .findByEventIdConfirmed(event.getId()).size()));
@@ -60,7 +60,7 @@ public class PublicEventService {
         }
         statService.createView(HitMapper.toEndpointHit("ewm-main-service", request));
         List<ShortEventDto> eventsShort = EventUtil.getViews(fullEventDtoList, statService).stream()
-                .map(EventMapper::toShortFromFull)
+                .map(EventMapper.EVENT_MAPPER::toShortFromFull)
                 .collect(Collectors.toList());
         if (sort != null && sort.equalsIgnoreCase("VIEWS")) {
             eventsShort.sort((e1, e2) -> e2.getViews().compareTo(e1.getViews()));
@@ -74,7 +74,7 @@ public class PublicEventService {
         Event event = eventRepository.findById(id).orElseThrow(() -> {
             throw new ObjectNotFoundException("Event not found");
         });
-        FullEventDto fullEventDto = EventMapper.toFullEventDto(event);
+        FullEventDto fullEventDto = EventMapper.EVENT_MAPPER.toFullEventDto(event);
         fullEventDto.setConfirmedRequests(requestsRepository.findAllByEventIdAndStatus(event.getId(), RequestStatus.CONFIRMED).size());
         statService.createView(HitMapper.toEndpointHit("ewm-main-service", request));
         log.info("Event sent");

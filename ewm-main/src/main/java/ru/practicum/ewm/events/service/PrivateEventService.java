@@ -51,15 +51,15 @@ public class PrivateEventService {
             throw new ObjectNotFoundException("Category not found");
         });
         createEventDto.setLocation(locationRepository.save(createEventDto.getLocation()));
-        Event event = eventRepository.save(EventMapper.toEventFromCreateDto(initiator, category, createEventDto));
-        FullEventDto fullEventDto = EventMapper.toFullEventDto(event);
+        Event event = eventRepository.save(EventMapper.EVENT_MAPPER.toEventFromCreateDto(initiator, category, createEventDto));
+        FullEventDto fullEventDto = EventMapper.EVENT_MAPPER.toFullEventDto(event);
         fullEventDto.setConfirmedRequests(0);
         return fullEventDto;
     }
 
     public List<ShortEventDto> getEventsByCreator(Long userId, PageRequest pageable) {
         List<ShortEventDto> shortEventDtos = eventRepository.findAllByInitiatorId(userId, pageable).stream()
-                .map(EventMapper::toShortEventDto)
+                .map(EventMapper.EVENT_MAPPER::toShortEventDto)
                 .collect(Collectors.toList());
         EventUtil.getConfirmedRequestsToShort(shortEventDtos, requestsRepository);
         return EventUtil.getViewsToShort(shortEventDtos, statService);
@@ -68,7 +68,7 @@ public class PrivateEventService {
     public FullEventDto getEventInfoByCreator(Long userId, Long eventId) {
         Event event = eventRepository.findByInitiatorIdAndId(userId, eventId).orElseThrow();
 
-        FullEventDto fullEventDto = EventMapper.toFullEventDto(event);
+        FullEventDto fullEventDto = EventMapper.EVENT_MAPPER.toFullEventDto(event);
         fullEventDto.setConfirmedRequests(requestsRepository
                 .findAllByEventIdAndStatus(eventId, RequestStatus.CONFIRMED).size());
         return EventUtil.getViews(Collections.singletonList(fullEventDto), statService).get(0);
@@ -99,8 +99,8 @@ public class PrivateEventService {
             Location location = locationRepository.save(eventUpdateRequestDto.getLocation());
             event.setLocation(location);
         }
-        EventMapper.toEventFromUpdateRequestDto(event, eventUpdateRequestDto);
-        FullEventDto fullEventDto = EventMapper.toFullEventDto(event);
+        EventUtil.toEventFromUpdateRequestDto(event, eventUpdateRequestDto);
+        FullEventDto fullEventDto = EventMapper.EVENT_MAPPER.toFullEventDto(event);
         fullEventDto.setConfirmedRequests(requestsRepository.findAllByEventIdAndStatus(eventId, RequestStatus.CONFIRMED)
                 .size());
         return EventUtil.getViews(Collections.singletonList(fullEventDto), statService).get(0);

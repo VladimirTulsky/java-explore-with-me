@@ -42,7 +42,7 @@ public class AdminEventService {
                                          String rangeStart, String rangeEnd, Integer from, Integer size) {
         List<FullEventDto> fullEventDtoList = criteriaEventRepository.findEvents(users, states, categories, rangeStart, rangeEnd, from, size)
                 .stream()
-                .map(EventMapper::toFullEventDto)
+                .map(EventMapper.EVENT_MAPPER::toFullEventDto)
                 .collect(Collectors.toList());
         EventUtil.getConfirmedRequests(fullEventDtoList, requestsRepository);
         return EventUtil.getViews(fullEventDtoList, statService);
@@ -91,9 +91,9 @@ public class AdminEventService {
         if (eventUpdateRequestDto.getLocation() != null) {
             event.setLocation(locationRepository.save(eventUpdateRequestDto.getLocation()));
         }
-        EventMapper.toEventFromUpdateRequestDto(event, eventUpdateRequestDto);
+        EventUtil.toEventFromUpdateRequestDto(event, eventUpdateRequestDto);
         eventRepository.save(event);
-        FullEventDto fullEventDto = EventMapper.toFullEventDto(event);
+        FullEventDto fullEventDto = EventMapper.EVENT_MAPPER.toFullEventDto(event);
         EventUtil.getConfirmedRequests(Collections.singletonList(fullEventDto), requestsRepository);
         return EventUtil.getViews(Collections.singletonList(fullEventDto), statService).get(0);
     }

@@ -20,7 +20,7 @@ public class CompilationMapper {
 
     public static ResponseCompilationDto toResponseCompilationDto(Compilation compilation) {
         List<ShortEventDto> shortEvents = compilation.getEvents().stream()
-                .map(EventMapper::toShortEventDto)
+                .map(EventMapper.EVENT_MAPPER::toShortEventDto)
                 .collect(Collectors.toList());
         return new ResponseCompilationDto(compilation.getId(),
                 shortEvents,

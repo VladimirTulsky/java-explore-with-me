@@ -3,8 +3,8 @@ package ru.practicum.ewm.events.util;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import ru.practicum.ewm.dto.ViewStatsDto;
-import ru.practicum.ewm.events.dto.FullEventDto;
-import ru.practicum.ewm.events.dto.ShortEventDto;
+import ru.practicum.ewm.events.dto.*;
+import ru.practicum.ewm.events.model.Event;
 import ru.practicum.ewm.requests.model.ParticipationRequest;
 import ru.practicum.ewm.requests.repository.RequestsRepository;
 import ru.practicum.ewm.statistic.StatService;
@@ -12,10 +12,7 @@ import ru.practicum.ewm.statistic.StatService;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 public class EventUtil {
@@ -83,6 +80,38 @@ public class EventUtil {
         requests.forEach(element -> counter.put(element.getEvent().getId(),
                 counter.getOrDefault(element.getEvent().getId(), 0) + 1));
         eventDtos.forEach(event -> event.setConfirmedRequests(counter.get(event.getId())));
+    }
+
+    public static void toEventFromUpdateRequestDto(Event event,
+                                                   EventUpdateRequestDto eventUpdateRequestDto) {
+        if (Objects.equals(eventUpdateRequestDto.getStateAction(), UserActionState.CANCEL_REVIEW.name())) {
+            event.setEventState(EventState.CANCELED);
+        }
+        if (Objects.equals(eventUpdateRequestDto.getStateAction(), UserActionState.SEND_TO_REVIEW.name())) {
+            event.setEventState(EventState.PENDING);
+        }
+        if (eventUpdateRequestDto.getAnnotation() != null) {
+            event.setAnnotation(eventUpdateRequestDto.getAnnotation());
+        }
+        if (eventUpdateRequestDto.getDescription() != null) {
+            event.setDescription(eventUpdateRequestDto.getDescription());
+        }
+        if (eventUpdateRequestDto.getEventDate() != null) {
+            event.setEventDate(LocalDateTime.parse(eventUpdateRequestDto.getEventDate(),
+                    DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")));
+        }
+        if (eventUpdateRequestDto.getPaid() != null) {
+            event.setPaid(eventUpdateRequestDto.getPaid());
+        }
+        if (eventUpdateRequestDto.getParticipantLimit() != null) {
+            event.setParticipantLimit(eventUpdateRequestDto.getParticipantLimit());
+        }
+        if (eventUpdateRequestDto.getRequestModeration() != null) {
+            event.setRequestModeration(eventUpdateRequestDto.getRequestModeration());
+        }
+        if (eventUpdateRequestDto.getTitle() != null) {
+            event.setTitle(eventUpdateRequestDto.getTitle());
+        }
     }
 
     public static String toString(LocalDateTime localDateTime) {
