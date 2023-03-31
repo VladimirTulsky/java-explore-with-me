@@ -14,8 +14,8 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 
-@RestController
 @Validated
+@RestController
 @RequiredArgsConstructor(onConstructor_ = @Autowired)
 public class StatsController {
     private final StatsService statsService;
@@ -29,9 +29,9 @@ public class StatsController {
     }
 
     @GetMapping("/stats")
-    public List<ViewStatsDto> getStats(@RequestParam(required = false) String start,
-                                       @RequestParam(required = false) String end,
-                                       @RequestParam List<String> uris,
+    public List<ViewStatsDto> getStats(@RequestParam String start,
+                                       @RequestParam String end,
+                                       @RequestParam(required = false) List<String> uris,
                                        @RequestParam(defaultValue = "false") Boolean unique) {
         return statsService.getStats(LocalDateTime.parse(start, FORMATTER),
                 LocalDateTime.parse(end, FORMATTER),

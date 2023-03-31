@@ -12,7 +12,6 @@ import ru.practicum.ewm.model.EndpointHit;
 import ru.practicum.ewm.repository.StatsRepository;
 
 import java.time.LocalDateTime;
-import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -26,9 +25,9 @@ public class StatsServiceImpl implements StatsService {
     @Override
     @Transactional
     public EndpointHitDto create(EndpointHitDto endpointHitDto) {
-        EndpointHit endpointHit = statsRepository.save(StatsMapper.toEndpointHit(endpointHitDto));
+        EndpointHit endpointHit = statsRepository.save(StatsMapper.STATS_MAPPER.toEndpointHit(endpointHitDto));
         log.info("Hit created with id {}", endpointHit.getId());
-        return StatsMapper.toEndpointHitDto(endpointHit);
+        return StatsMapper.STATS_MAPPER.toEndpointHitDto(endpointHit);
     }
 
     @Override
@@ -36,17 +35,24 @@ public class StatsServiceImpl implements StatsService {
                                        LocalDateTime end,
                                        List<String> uris,
                                        Boolean unique) {
-        log.info("Stats send");
+        log.info("Stats sent");
         if (uris == null || uris.isEmpty()) {
-            return Collections.emptyList();
-        }
-        if (unique) {
+            if (unique) {
+                return statsRepository.getStatsWithoutUriUnique(start, end).stream()
+                        .map(StatsMapper.STATS_MAPPER::toViewStatsDto)
+                        .collect(Collectors.toList());
+            } else {
+                return statsRepository.getStatsWithoutUriNotUnique(start, end).stream()
+                        .map(StatsMapper.STATS_MAPPER::toViewStatsDto)
+                        .collect(Collectors.toList());
+            }
+        } else if (unique) {
             return statsRepository.getStatsUnique(start, end, uris).stream()
-                    .map(StatsMapper::toViewStatsDto)
+                    .map(StatsMapper.STATS_MAPPER::toViewStatsDto)
                     .collect(Collectors.toList());
         } else {
             return statsRepository.getStatsNotUnique(start, end, uris).stream()
-                    .map(StatsMapper::toViewStatsDto)
+                    .map(StatsMapper.STATS_MAPPER::toViewStatsDto)
                     .collect(Collectors.toList());
         }
     }
