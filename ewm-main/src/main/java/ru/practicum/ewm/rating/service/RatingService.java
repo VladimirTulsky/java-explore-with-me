@@ -23,7 +23,7 @@ public class RatingService {
     private final RatingRepository ratingRepository;
 
     public RatingDto create(Long userId, RatingDto ratingDto) {
-        Event event = eventRepository.findById(ratingDto.getEventId()).orElseThrow(()-> {
+        Event event = eventRepository.findById(ratingDto.getEventId()).orElseThrow(() -> {
             throw new ObjectNotFoundException("Event not found");
         });
         if (!event.getEventState().equals(EventState.PUBLISHED)) {
