@@ -13,12 +13,13 @@
 					"listen": "test",
 					"script": {
 						"exec": [
+							"pm.globals.set(\"user1Id\", pm.response.json().id);\r",
+							"\r",
 							"pm.test(\"Status code is 201\", function () {\r",
 							"    pm.expect(pm.response.code).to.be.oneOf([200,201]);\r",
 							"});\r",
 							"pm.test(\"Test create user\", function () {\r",
 							"    var jsonData = pm.response.json();\r",
-							"    pm.expect(jsonData.id).to.eql(1);\r",
 							"    pm.expect(jsonData.email).to.eql('ben_white@gmail.com');\r",
 							"    pm.expect(jsonData.name).to.eql('Benjamin White');\r",
 							"});"
@@ -65,12 +66,13 @@
 					"listen": "test",
 					"script": {
 						"exec": [
+							"pm.globals.set(\"user2Id\", pm.response.json().id);\r",
+							"\r",
 							"pm.test(\"Status code is 201\", function () {\r",
 							"    pm.expect(pm.response.code).to.be.oneOf([200,201]);\r",
 							"});\r",
 							"pm.test(\"Test create user\", function () {\r",
 							"    var jsonData = pm.response.json();\r",
-							"    pm.expect(jsonData.id).to.eql(2);\r",
 							"    pm.expect(jsonData.email).to.eql('bob_marley@gmail.com');\r",
 							"    pm.expect(jsonData.name).to.eql('Bob Marley');\r",
 							"});"
@@ -117,12 +119,13 @@
 					"listen": "test",
 					"script": {
 						"exec": [
+							"pm.globals.set(\"user3Id\", pm.response.json().id);\r",
+							"\r",
 							"pm.test(\"Status code is 201\", function () {\r",
 							"    pm.expect(pm.response.code).to.be.oneOf([200,201]);\r",
 							"});\r",
 							"pm.test(\"Test create user\", function () {\r",
 							"    var jsonData = pm.response.json();\r",
-							"    pm.expect(jsonData.id).to.eql(3);\r",
 							"    pm.expect(jsonData.email).to.eql('elvis@gmail.com');\r",
 							"    pm.expect(jsonData.name).to.eql('Elvis Presley');\r",
 							"});"
@@ -169,12 +172,13 @@
 					"listen": "test",
 					"script": {
 						"exec": [
+							"pm.globals.set(\"categoryId\", pm.response.json().id);\r",
+							"\r",
 							"pm.test(\"Status code is 201\", function () {\r",
 							"    pm.expect(pm.response.code).to.be.oneOf([200,201]);\r",
 							"});\r",
 							"pm.test(\"Test create category\", function () {\r",
 							"    var jsonData = pm.response.json();\r",
-							"    pm.expect(jsonData.id).to.eql(1);\r",
 							"    pm.expect(jsonData.name).to.eql('Meeting');\r",
 							"});"
 						],
@@ -220,13 +224,13 @@
 					"listen": "test",
 					"script": {
 						"exec": [
+							"pm.globals.set(\"eventId\", pm.response.json().id);\r",
+							"\r",
 							"pm.test(\"Status code is 201\", function () {\r",
 							"    pm.expect(pm.response.code).to.be.oneOf([200,201]);\r",
 							"});\r",
 							"pm.test(\"Test create event\", function () {\r",
 							"    var jsonData = pm.response.json();\r",
-							"    pm.expect(jsonData.id).to.eql(1);\r",
-							"    pm.expect(jsonData.initiator.id).to.eql(1);\r",
 							"    pm.expect(jsonData.initiator.name).to.eql('Benjamin White');\r",
 							"    pm.expect(jsonData.state).to.eql('PENDING');\r",
 							"    pm.expect(jsonData.rating).to.eql(0);\r",
@@ -252,7 +256,7 @@
 				],
 				"body": {
 					"mode": "raw",
-					"raw": "{\r\n    \"annotation\":\"good event for good people\",\r\n    \"category\":1,\r\n    \"description\":\"Spending time in our company\",\r\n    \"eventDate\":\"2023-04-04 20:55:29\",\r\n    \"location\":\r\n        {\r\n        \"lat\":-15.261,\r\n        \"lon\":55.114\r\n        },\r\n    \"paid\":\"false\",\r\n    \"participantLimit\":\"559\",\r\n    \"requestModeration\":true,\r\n    \"title\":\"Evening meating\"\r\n}"
+					"raw": "{\r\n    \"annotation\":\"good event for good people\",\r\n    \"category\":{{categoryId}},\r\n    \"description\":\"Spending time in our company\",\r\n    \"eventDate\":\"2023-04-04 20:55:29\",\r\n    \"location\":\r\n        {\r\n        \"lat\":-15.261,\r\n        \"lon\":55.114\r\n        },\r\n    \"paid\":\"false\",\r\n    \"participantLimit\":\"559\",\r\n    \"requestModeration\":true,\r\n    \"title\":\"Evening meating\"\r\n}"
 				},
 				"url": {
 					"raw": "{{baseUrl}}/users/:userId/events",
@@ -267,7 +271,7 @@
 					"variable": [
 						{
 							"key": "userId",
-							"value": "1"
+							"value": "{{user1Id}}"
 						}
 					]
 				}
@@ -305,7 +309,7 @@
 				],
 				"body": {
 					"mode": "raw",
-					"raw": "{\r\n    \"eventId\": 1,\r\n    \"ratingState\": \"LIKE\"\r\n}"
+					"raw": "{\r\n    \"eventId\": {{eventId}},\r\n    \"ratingState\": \"LIKE\"\r\n}"
 				},
 				"url": {
 					"raw": "{{baseUrl}}/rating/:userId",
@@ -319,7 +323,7 @@
 					"variable": [
 						{
 							"key": "userId",
-							"value": "2"
+							"value": "{{user2Id}}"
 						}
 					]
 				}
@@ -376,7 +380,7 @@
 					"variable": [
 						{
 							"key": "eventId",
-							"value": "1"
+							"value": "{{eventId}}"
 						}
 					]
 				}
@@ -418,7 +422,7 @@
 				],
 				"body": {
 					"mode": "raw",
-					"raw": "{\r\n    \"eventId\": 1,\r\n    \"ratingState\": \"LIKE\"\r\n}"
+					"raw": "{\r\n    \"eventId\": {{eventId}},\r\n    \"ratingState\": \"LIKE\"\r\n}"
 				},
 				"url": {
 					"raw": "{{baseUrl}}/rating/:userId",
@@ -432,7 +436,7 @@
 					"variable": [
 						{
 							"key": "userId",
-							"value": "2"
+							"value": "{{user2Id}}"
 						}
 					]
 				}
@@ -451,7 +455,7 @@
 							"});\r",
 							"pm.test(\"Event must has rating 1\", function () {\r",
 							"    var jsonData = pm.response.json();\r",
-							"    pm.expect(jsonData.id).to.eql(1)\r",
+							"    pm.expect(jsonData.title).to.eql('Evening meating')\r",
 							"    pm.expect(jsonData.state).to.eql('PUBLISHED')\r",
 							"    pm.expect(jsonData.rating).to.eql(1)\r",
 							"});"
@@ -486,7 +490,7 @@
 					"variable": [
 						{
 							"key": "id",
-							"value": "1"
+							"value": "{{eventId}}"
 						}
 					]
 				}
@@ -528,7 +532,7 @@
 				],
 				"body": {
 					"mode": "raw",
-					"raw": "{\r\n    \"eventId\": 1,\r\n    \"ratingState\": \"DISLIKE\"\r\n}"
+					"raw": "{\r\n    \"eventId\": {{eventId}},\r\n    \"ratingState\": \"DISLIKE\"\r\n}"
 				},
 				"url": {
 					"raw": "{{baseUrl}}/rating/:userId",
@@ -542,7 +546,7 @@
 					"variable": [
 						{
 							"key": "userId",
-							"value": "3"
+							"value": "{{user3Id}}"
 						}
 					]
 				}
@@ -561,7 +565,7 @@
 							"});\r",
 							"pm.test(\"Event must has rating 1\", function () {\r",
 							"    var jsonData = pm.response.json();\r",
-							"    pm.expect(jsonData.id).to.eql(1)\r",
+							"    pm.expect(jsonData.title).to.eql('Evening meating')\r",
 							"    pm.expect(jsonData.state).to.eql('PUBLISHED')\r",
 							"    pm.expect(jsonData.rating).to.eql(0)\r",
 							"});"
@@ -596,7 +600,7 @@
 					"variable": [
 						{
 							"key": "id",
-							"value": "1"
+							"value": "{{eventId}}"
 						}
 					]
 				}
