@@ -17,6 +17,7 @@ import ru.practicum.ewm.events.util.EventUtil;
 import ru.practicum.ewm.exception.ConflictException;
 import ru.practicum.ewm.exception.ObjectNotFoundException;
 import ru.practicum.ewm.location.repository.LocationRepository;
+import ru.practicum.ewm.rating.repository.RatingRepository;
 import ru.practicum.ewm.requests.repository.RequestsRepository;
 import ru.practicum.ewm.statistic.StatService;
 
@@ -36,6 +37,7 @@ public class AdminEventService {
     private final CategoryRepository categoryRepository;
     private final LocationRepository locationRepository;
     private final RequestsRepository requestsRepository;
+    private final RatingRepository ratingRepository;
     private final StatService statService;
 
     public List<FullEventDto> findEvents(List<Long> users, List<EventState> states, List<Long> categories,
@@ -45,6 +47,7 @@ public class AdminEventService {
                 .map(EventMapper.EVENT_MAPPER::toFullEventDto)
                 .collect(Collectors.toList());
         EventUtil.getConfirmedRequests(fullEventDtoList, requestsRepository);
+        EventUtil.getRatingToFullEvents(fullEventDtoList, ratingRepository);
         return EventUtil.getViews(fullEventDtoList, statService);
     }
 
@@ -95,6 +98,7 @@ public class AdminEventService {
         eventRepository.save(event);
         FullEventDto fullEventDto = EventMapper.EVENT_MAPPER.toFullEventDto(event);
         EventUtil.getConfirmedRequests(Collections.singletonList(fullEventDto), requestsRepository);
+        EventUtil.getRatingToFullEvents(Collections.singletonList(fullEventDto), ratingRepository);
         return EventUtil.getViews(Collections.singletonList(fullEventDto), statService).get(0);
     }
 }

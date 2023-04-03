@@ -16,6 +16,7 @@ import ru.practicum.ewm.exception.ConflictException;
 import ru.practicum.ewm.exception.ObjectNotFoundException;
 import ru.practicum.ewm.location.model.Location;
 import ru.practicum.ewm.location.repository.LocationRepository;
+import ru.practicum.ewm.rating.repository.RatingRepository;
 import ru.practicum.ewm.requests.dto.RequestStatus;
 import ru.practicum.ewm.requests.repository.RequestsRepository;
 import ru.practicum.ewm.statistic.StatService;
@@ -33,6 +34,7 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class PrivateEventService {
     private final RequestsRepository requestsRepository;
+    private final RatingRepository ratingRepository;
     private final LocationRepository locationRepository;
     private final EventRepository eventRepository;
     private final AdminUserRepository adminUserRepository;
@@ -54,6 +56,7 @@ public class PrivateEventService {
         Event event = eventRepository.save(EventMapper.EVENT_MAPPER.toEventFromCreateDto(initiator, category, createEventDto));
         FullEventDto fullEventDto = EventMapper.EVENT_MAPPER.toFullEventDto(event);
         fullEventDto.setConfirmedRequests(0);
+        fullEventDto.setRating(0L);
         return fullEventDto;
     }
 
@@ -62,6 +65,7 @@ public class PrivateEventService {
                 .map(EventMapper.EVENT_MAPPER::toShortEventDto)
                 .collect(Collectors.toList());
         EventUtil.getConfirmedRequestsToShort(shortEventDtos, requestsRepository);
+        EventUtil.getRatingToShortEvents(shortEventDtos, ratingRepository);
         return EventUtil.getViewsToShort(shortEventDtos, statService);
     }
 
@@ -71,6 +75,7 @@ public class PrivateEventService {
         FullEventDto fullEventDto = EventMapper.EVENT_MAPPER.toFullEventDto(event);
         fullEventDto.setConfirmedRequests(requestsRepository
                 .findAllByEventIdAndStatus(eventId, RequestStatus.CONFIRMED).size());
+        EventUtil.getRatingToFullEvents(Collections.singletonList(fullEventDto), ratingRepository);
         return EventUtil.getViews(Collections.singletonList(fullEventDto), statService).get(0);
     }
 
@@ -103,6 +108,7 @@ public class PrivateEventService {
         FullEventDto fullEventDto = EventMapper.EVENT_MAPPER.toFullEventDto(event);
         fullEventDto.setConfirmedRequests(requestsRepository.findAllByEventIdAndStatus(eventId, RequestStatus.CONFIRMED)
                 .size());
+        EventUtil.getRatingToFullEvents(Collections.singletonList(fullEventDto), ratingRepository);
         return EventUtil.getViews(Collections.singletonList(fullEventDto), statService).get(0);
     }
 }

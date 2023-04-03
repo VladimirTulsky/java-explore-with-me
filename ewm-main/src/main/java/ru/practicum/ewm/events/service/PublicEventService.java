@@ -13,6 +13,7 @@ import ru.practicum.ewm.events.model.Event;
 import ru.practicum.ewm.events.repository.EventRepository;
 import ru.practicum.ewm.events.util.EventUtil;
 import ru.practicum.ewm.exception.ObjectNotFoundException;
+import ru.practicum.ewm.rating.repository.RatingRepository;
 import ru.practicum.ewm.requests.dto.RequestStatus;
 import ru.practicum.ewm.requests.repository.RequestsRepository;
 import ru.practicum.ewm.statistic.HitMapper;
@@ -32,6 +33,7 @@ import java.util.stream.Collectors;
 public class PublicEventService {
     private final EventRepository eventRepository;
     private final RequestsRepository requestsRepository;
+    private final RatingRepository ratingRepository;
     private final StatService statService;
 
     public List<ShortEventDto> findEvents(String text, List<Long> categories, Boolean paid, String rangeStart,
@@ -66,6 +68,7 @@ public class PublicEventService {
             eventsShort.sort((e1, e2) -> e2.getViews().compareTo(e1.getViews()));
         }
         EventUtil.getConfirmedRequests(fullEventDtoList, requestsRepository);
+        EventUtil.getRatingToFullEvents(fullEventDtoList, ratingRepository);
         log.info("Events sent");
         return eventsShort;
     }
@@ -76,6 +79,7 @@ public class PublicEventService {
         });
         FullEventDto fullEventDto = EventMapper.EVENT_MAPPER.toFullEventDto(event);
         fullEventDto.setConfirmedRequests(requestsRepository.findAllByEventIdAndStatus(event.getId(), RequestStatus.CONFIRMED).size());
+        EventUtil.getRatingToFullEvents(Collections.singletonList(fullEventDto), ratingRepository);
         statService.createView(HitMapper.toEndpointHit("ewm-main-service", request));
         log.info("Event sent");
         return EventUtil.getViews(Collections.singletonList(fullEventDto), statService).get(0);
