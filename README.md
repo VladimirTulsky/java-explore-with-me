@@ -1,5 +1,4 @@
 # java-explore-with-me
-https://github.com/VladimirTulsky/java-explore-with-me/pull/5
 
 Функционал: афиша мероприятий, события, приглашения и пр.
 
